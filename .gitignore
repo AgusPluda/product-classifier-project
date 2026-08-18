@@ -30,6 +30,13 @@ data/*
 !data/processed/
 data/processed/*
 !data/processed/*.csv
+# fact_ventas.csv es casi una copia completa de las transacciones (93 MB) --
+# se regenera corriendo la seccion 7 de product_sales_analysis.ipynb, no se versiona.
+data/processed/fact_ventas.csv
+
+# ---------- Power BI ----------
+# El backup lo genera scripts/restyle_pbix.py; el .pbix versionado es el bueno.
+*.backup.pbix
 
 # ---------- Modelos entrenados ----------
 models/
