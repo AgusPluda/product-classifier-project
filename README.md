@@ -44,7 +44,7 @@ y armar un dashboard interactivo en Power BI.
 ## Dataset
 
 **Fuente:** [Online Retail II](https://archive.ics.uci.edu/dataset/502/online+retail+ii) (UCI),
-en una versión ya curada por mí a partir del dataset original.
+en una versión ya curada por mí a partir del dataset original (Version curada: [online_retail_sales](https://drive.google.com/drive/u/0/folders/1EDneaog4fd4tv6MaOQ1AsZ5pwIqul1bW)).
 
 | Métrica | Valor |
 |---|---|
