@@ -51,7 +51,7 @@ en una versión ya curada por mí a partir del dataset original (Version curada:
 | Transacciones | 1.003.417 |
 | Rango de fechas | 2009-12-01 → 2011-12-09 *(diciembre 2011 incompleto — corta el día 9)* |
 | Productos únicos tras deduplicación | 4.724 |
-| País dominante | Reino Unido (~92% del revenue) |
+| País dominante | Reino Unido (85,5% del revenue, 92,1% de las líneas de transacción) |
 
 El dataset original tenía 5.613 pares `(stock_code, description)` para solo 4.902 códigos de
 producto — 646 códigos tenían hasta 4 descripciones distintas por errores de tipeo. El proceso de
@@ -77,7 +77,7 @@ razonamiento detrás de cada decisión documentado en el propio notebook. En res
 3. **Taxonomía** — 15 categorías comerciales mutuamente excluyentes, definidas a partir de los
    clusters.
 4. **Etiquetado débil por reglas** — diccionario de keywords en orden de prioridad; cobertura
-   final del 67,3% del catálogo.
+   final del 67,2% del catálogo.
 5. **Set gold** — 400 productos (~25 por categoría, muestreo estratificado, no proporcional) 
    etiquetados a mano **sin ver la predicción de la regla**, para que la evaluación sea honesta.
 6. **Modelo supervisado** — TF-IDF (palabras + caracteres) + SVM lineal, comparado contra Dummy,
@@ -90,30 +90,32 @@ razonamiento detrás de cada decisión documentado en el propio notebook. En res
 
 | Métrica | Valor |
 |---|---|
-| Cobertura de las reglas sobre el catálogo | 67,3% |
-| Accuracy de las reglas vs. gold (huecos de cobertura como error) | 68,2% |
-| Accuracy del modelo (SVM lineal) vs. gold | **71,8%** |
-| F1 macro del modelo vs. gold | **0,692** |
+| Cobertura de las reglas sobre el catálogo | 67,2% |
+| Accuracy de las reglas vs. gold (huecos de cobertura como error) | 70,5% |
+| Accuracy del modelo (SVM lineal) vs. gold | **74,0%** |
+| F1 macro del modelo vs. gold | **0,719** |
 
 Un detalle importante para leer estos números bien: la validación cruzada del modelo *sobre los
-datos de entrenamiento* da 0,985 de F1 macro — parece espectacular, pero es engañoso: el modelo
+datos de entrenamiento* da 0,984 de F1 macro — parece espectacular, pero es engañoso: el modelo
 entrena con las mismas etiquetas que generaron las reglas, así que ese número mide qué tan bien
-imita las reglas, no si funciona de verdad. El 71,8%/0,692 contra el gold es la medida honesta, y
+imita las reglas, no si funciona de verdad. El 74,0%/0,719 contra el gold es la medida honesta, y
 es la que efectivamente supera tanto al Dummy como al baseline de reglas.
 
 ## Análisis de ventas — hallazgos principales
 
 - **Revenue total:** £19,65 millones en 1.003.417 líneas de transacción.
-- **`Cocina y Mesa`** lidera con 22,9% del revenue — coherente con un mayorista de regalos y
+- **`Cocina y Mesa`** lidera con 22,8% del revenue — coherente con un mayorista de regalos y
   hogar, donde la vajilla y utensilios de cocina son de alta rotación.
 - **Estacionalidad:** el pico de revenue ocurre en **noviembre**, no en diciembre, y se repite
   igual en 2010 y 2011. Tiene sentido tratándose de un *mayorista*: sus clientes (comercios)
   reponen stock de productos navideños *antes* de la temporada de fin de año, no durante ella.
-- **Geografía:** Reino Unido concentra ~92% del revenue. Entre los compradores internacionales,
-  `Cocina y Mesa` está sobrerrepresentada (31,5% vs. 21,4% en UK) — el resto del mundo concentra
-  sus compras en artículos utilitarios más que en decorativos. `Botellas de Agua Caliente y
-  Confort` pesa más en UK (3,8% vs. 1,7%) — un producto culturalmente muy británico, buen chequeo
-  de sanidad de que el análisis captura señal real.
+- **Geografía:** Reino Unido concentra el 85,5% del revenue, y el 92,1% de las líneas de
+  transacción — el mercado interno vende mucho más volumen de tickets chicos. Entre los
+  compradores internacionales, `Cocina y Mesa` está sobrerrepresentada (31,6% vs. 21,3% en
+  UK) — el resto del mundo concentra sus compras en artículos utilitarios más que en
+  decorativos. `Botellas de Agua Caliente y Confort` pesa más en UK (3,8% vs. 1,7%) — un
+  producto culturalmente muy británico, buen chequeo de sanidad de que el análisis captura
+  señal real.
 
 ## Dashboard interactivo (Power BI)
 
