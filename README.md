@@ -23,7 +23,7 @@ productos etiquetada a mano (a ciegas, sin ver la predicción de las reglas) sir
 fuente de verdad confiable, y un modelo supervisado (TF-IDF + SVM lineal) se entrena sobre las
 reglas pero se **evalúa contra el gold** — la única forma honesta de saber si generaliza más allá
 de lo que las reglas pudieron capturar. El resultado clasifica los 4.724 productos del catálogo
-en 15 categorías comerciales, que después se usan para analizar el comportamiento de las ventas
+en 17 categorías comerciales, que después se usan para analizar el comportamiento de las ventas
 y armar un dashboard interactivo en Power BI.
 
 ## Objetivos
@@ -74,12 +74,18 @@ razonamiento detrás de cada decisión documentado en el propio notebook. En res
    descripción por frecuencia real de uso.
 2. **Clustering exploratorio** — TF-IDF + K-Means (sobre-clusterizado a K=45, después fusionado a
    mano) para descubrir qué categorías de producto existen naturalmente en el catálogo.
-3. **Taxonomía** — 15 categorías comerciales mutuamente excluyentes, definidas a partir de los
-   clusters.
+3. **Taxonomía** — 17 categorías comerciales mutuamente excluyentes, definidas a partir de los
+   clusters (15 originales + 2 agregadas al revisar qué había dentro de `Otros`, ver más abajo).
 4. **Etiquetado débil por reglas** — diccionario de keywords en orden de prioridad; cobertura
-   final del 67,2% del catálogo.
-5. **Set gold** — 400 productos (~25 por categoría, muestreo estratificado, no proporcional) 
+   final del 68,6% del catálogo.
+5. **Set gold** — 400 productos (~25 por categoría, muestreo estratificado, no proporcional)
    etiquetados a mano **sin ver la predicción de la regla**, para que la evaluación sea honesta.
+   Iteración posterior: al revisar los 27 productos que quedaron en `Otros`, aparecieron dos
+   grupos nítidos (artículos de escritura y juguetes) que no tenían categoría propia. Se
+   agregaron `Juguetes y Juegos` y `Escritura y Útiles`, y se re-etiquetaron a ciegas —sin ver
+   la categoría anterior ni la sugerencia de la regla— las 30 filas afectadas (las 27 de
+   `Otros` más 3 que las categorías nuevas le restan a otras). Quedaron 6 genuinamente sin
+   categoría.
 6. **Modelo supervisado** — TF-IDF (palabras + caracteres) + SVM lineal, comparado contra Dummy,
    Naive Bayes y Regresión Logística vía validación cruzada, afinado con `GridSearchCV`.
 7. **Inferencia + calibración** — predicción sobre las 4.724 filas del catálogo, con un umbral de
@@ -90,15 +96,15 @@ razonamiento detrás de cada decisión documentado en el propio notebook. En res
 
 | Métrica | Valor |
 |---|---|
-| Cobertura de las reglas sobre el catálogo | 67,2% |
-| Accuracy de las reglas vs. gold (huecos de cobertura como error) | 70,5% |
-| Accuracy del modelo (SVM lineal) vs. gold | **74,0%** |
-| F1 macro del modelo vs. gold | **0,719** |
+| Cobertura de las reglas sobre el catálogo | 68,6% |
+| Accuracy de las reglas vs. gold (huecos de cobertura como error) | 74,5% |
+| Accuracy del modelo (SVM lineal) vs. gold | **78,0%** |
+| F1 macro del modelo vs. gold | **0,746** |
 
 Un detalle importante para leer estos números bien: la validación cruzada del modelo *sobre los
-datos de entrenamiento* da 0,984 de F1 macro — parece espectacular, pero es engañoso: el modelo
+datos de entrenamiento* da 0,980 de F1 macro — parece espectacular, pero es engañoso: el modelo
 entrena con las mismas etiquetas que generaron las reglas, así que ese número mide qué tan bien
-imita las reglas, no si funciona de verdad. El 74,0%/0,719 contra el gold es la medida honesta, y
+imita las reglas, no si funciona de verdad. El 78,0%/0,746 contra el gold es la medida honesta, y
 es la que efectivamente supera tanto al Dummy como al baseline de reglas.
 
 ## Análisis de ventas — hallazgos principales
@@ -166,6 +172,7 @@ product-classifier-project/
 │   └── processed/
 │       ├── products_catalog.csv           # catalogo canonico (Paso 1)
 │       ├── gold_labels.csv                # 400 productos etiquetados a mano (Paso 5)
+│       ├── gold_otros_revisado.csv        # 30 re-etiquetados a ciegas tras ampliar la taxonomia
 │       ├── products_categorized.csv       # catalogo con categoria_final (Paso 7)
 │       ├── dim_producto.csv               # dimension de producto (Power BI)
 │       ├── dim_fecha.csv                  # dimension de fecha (Power BI)
@@ -207,11 +214,13 @@ product-classifier-project/
 
 ## Limitaciones conocidas
 
-- `Decoración del Hogar` y `Papelería y Tarjetería` son las categorías más débiles del modelo
-  (F1 ≈ 0,27 y ≈ 0,44) — son, por diseño, las más "catch-all" de la taxonomía y se solapan
-  semánticamente con el resto.
+- `Decoración del Hogar` sigue siendo la categoría más débil del modelo (F1 ≈ 0,29) — es, por
+  diseño, la más "catch-all" de la taxonomía y se solapa semánticamente con el resto.
+  `Papelería y Tarjetería` mejoró a F1 ≈ 0,62 al sacarle los artículos de escritura.
 - La categoría `Otros` nunca aparece en el entrenamiento débil, así que el modelo no puede
-  predecirla — se resuelve parcialmente con el umbral de confianza del Paso 7, no del todo.
+  predecirla — se resuelve parcialmente con el umbral de confianza del Paso 7, no del todo. Tras
+  la revisión del set gold, sólo 6 de 400 productos quedan genuinamente sin categoría (antes 27),
+  así que el costo de esta limitación bajó de 6,75 a 1,5 puntos de accuracy.
 - Diciembre 2011 tiene datos incompletos (corta el día 9) — excluido explícitamente de cualquier
   comparación mensual, tanto en el notebook como en el dashboard.
 
