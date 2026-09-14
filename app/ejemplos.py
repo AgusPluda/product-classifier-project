@@ -24,7 +24,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from clasificador import GLOSA_EN, ORDEN_PRIORIDAD
+from clasificador import ORDEN_PRIORIDAD
 
 DATA_DIR = Path(__file__).parent / "data"
 RUTA_CATALOGO = DATA_DIR / "products_categorized.csv"
@@ -33,8 +33,8 @@ RUTA_GOLD = DATA_DIR / "gold_labels.csv"
 N_POR_CATEGORIA = 25
 CATEGORIAS_TABLA = list(ORDEN_PRIORIDAD)  # excluye "Otros" y "Sin clasificar"
 
-COL_PRODUCTO = "Producto / Product"
-COL_VERIFICADO = "Verificado / Verified"
+COL_PRODUCTO = "Producto"
+COL_VERIFICADO = "Verificado"
 
 
 @lru_cache(maxsize=1)
@@ -80,17 +80,3 @@ def ejemplos_por_categoria(categoria: str) -> pd.DataFrame:
             faltan -= 1
 
     return pd.DataFrame(filas, columns=[COL_PRODUCTO, COL_VERIFICADO])
-
-
-def opciones_dropdown() -> list[str]:
-    """Etiquetas 'Categoría (English gloss)' para el selector de la UI,
-    en el mismo orden de prioridad de las reglas.
-    """
-    return [f"{cat} ({GLOSA_EN[cat]})" for cat in CATEGORIAS_TABLA]
-
-
-def categoria_desde_opcion(opcion: str) -> str:
-    """Inversa de opciones_dropdown: recupera el nombre de categoria en
-    español a partir de la etiqueta bilingue mostrada en el dropdown.
-    """
-    return opcion.rsplit(" (", 1)[0]
