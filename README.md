@@ -9,6 +9,7 @@
 ![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-green)
+[![Demo](https://img.shields.io/badge/Demo-Clasificador%20en%20vivo-1a9c8c)](https://product-classifier-project.onrender.com)
 
 ## Descripción del proyecto
 
@@ -152,6 +153,17 @@ El layout del `.pbix` (posiciones, medidas DAX, tema de color) se genera y verif
 programática con `scripts/restyle_pbix.py` y `scripts/verify_pbix.py`, en vez de armarse a mano
 visual por visual.
 
+## Demo interactiva (app web)
+
+🔗 **[product-classifier-project.onrender.com](https://product-classifier-project.onrender.com)**
+
+App en Gradio (tema Ocean) para probar el modelo sin correr el notebook: escribís el nombre de
+un producto en inglés y devuelve la categoría predicha, con un gráfico del top-3 de candidatas
+del modelo y la línea de margen de confianza que decide si gana el modelo o la regla de
+keywords. Incluye una tabla de 25 ejemplos por categoría para saber qué tipo de texto ingresar.
+Código en [`app/`](app/); corre en el free tier de Render, así que el primer request tras un
+rato sin tráfico puede tardar unos segundos en levantar.
+
 ## Tecnologías utilizadas
 
 - Python 3.14
@@ -187,6 +199,13 @@ product-classifier-project/
 ├── scripts/
 │   ├── restyle_pbix.py                    # edicion programatica del layout del .pbix
 │   └── verify_pbix.py                     # verificacion de integridad del .pbix
+│
+├── app/                                   # demo Gradio (deployada en Render)
+│   ├── app.py                             # interfaz
+│   ├── clasificador.py                    # reglas + pipeline + clasificar()
+│   ├── ejemplos.py                        # tabla de ejemplos por categoria
+│   ├── data/                              # copia liviana de data/processed/
+│   └── Dockerfile
 │
 ├── product_classifier.ipynb               # Pasos 0-7: catalogo -> modelo -> inferencia
 ├── product_sales_analysis.ipynb           # analisis de ventas + export a Power BI

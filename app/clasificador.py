@@ -151,30 +151,6 @@ REGLAS_CATEGORIAS = {
 # Prioridad: primera categoria que matchea.
 ORDEN_PRIORIDAD = list(REGLAS_CATEGORIAS.keys())
 
-# Glosa en ingles de cada categoria, para la interfaz bilingue. No forma
-# parte del pipeline original (es solo texto de UI).
-GLOSA_EN = {
-    "Juguetes y Juegos": "Toys & Games",
-    "Escritura y Útiles": "Writing & Supplies",
-    "Navidad": "Christmas",
-    "Pascua y Fiestas": "Easter & Parties",
-    "Botellas de Agua Caliente y Confort": "Hot Water Bottles & Comfort",
-    "Joyería y Bijouterie": "Jewellery & Costume Jewellery",
-    "Bolsos y Carteras": "Bags & Purses",
-    "Marcos y Fotografía": "Frames & Photography",
-    "Espejos, Relojes y Arte de Pared": "Mirrors, Clocks & Wall Art",
-    "Jardín y Exterior": "Garden & Outdoor",
-    "Cajas y Almacenamiento": "Boxes & Storage",
-    "Cocina y Mesa": "Kitchen & Tableware",
-    "Textiles del Hogar": "Home Textiles",
-    "Papelería y Tarjetería": "Stationery & Cards",
-    "Carteles y Señalética": "Signs & Plaques",
-    "Velas e Iluminación": "Candles & Lighting",
-    "Decoración del Hogar": "Home Decor",
-    "Sin clasificar": "Unclassified",
-    "Otros": "Other",
-}
-
 
 def normalizar(texto: str) -> str:
     """Misma normalizacion que product_classifier.ipynb, celda 26:
@@ -265,7 +241,7 @@ def clasificar(texto: str) -> dict:
     if not texto_norm:
         return {
             "error": True,
-            "mensaje": "Escribí el nombre de un producto (en inglés). / Type a product name (in English).",
+            "mensaje": "Escribí el nombre de un producto (en inglés).",
         }
 
     modelo = obtener_modelo()
