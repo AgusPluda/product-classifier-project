@@ -164,6 +164,8 @@ keywords. Incluye una tabla de 25 ejemplos por categoría para saber qué tipo d
 Código en [`app/`](app/); corre en el free tier de Render, así que el primer request tras un
 rato sin tráfico puede tardar unos segundos en levantar.
 
+![Demo del clasificador](images/app_demo.png)
+
 ## Tecnologías utilizadas
 
 - Python 3.14
@@ -194,7 +196,8 @@ product-classifier-project/
 │   ├── resumen_dashboard.png
 │   ├── estacionalidad_dashboard.png
 │   ├── geografia_dashboard.png
-│   └── detalle_dashboard.png
+│   ├── detalle_dashboard.png
+│   └── app_demo.png
 │
 ├── scripts/
 │   ├── restyle_pbix.py                    # edicion programatica del layout del .pbix
